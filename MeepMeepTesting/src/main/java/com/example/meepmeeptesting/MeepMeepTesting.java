@@ -2,8 +2,6 @@ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.TimeProducer;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.core.util.FieldUtil;
@@ -11,25 +9,14 @@ import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import org.rowlandhall.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 
-import java.util.Vector;
-
 public class MeepMeepTesting {
     public static final double TILE_SIZE = 24;
-
-    private static void scoreSample(TrajectorySequenceBuilder builder, double x, double y) {
-        builder.splineToSplineHeading(new Pose2d(x, y, Math.toRadians(90)), Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(0, -2 * TILE_SIZE, Math.toRadians(180)), Math.toRadians(180))
-                .splineToSplineHeading(new Pose2d(-2.5 * TILE_SIZE, -2.5 * TILE_SIZE, Math.toRadians(225)), Math.toRadians(225))
-                .splineToSplineHeading(new Pose2d(-2 * TILE_SIZE, -2 * TILE_SIZE, Math.toRadians(225)), Math.toRadians(225))
-                .splineToSplineHeading(new Pose2d(0, -2 * TILE_SIZE, Math.toRadians(0)), Math.toRadians(180))
-;
-    }
 
     private static void strafe(TrajectorySequenceBuilder builder, double x, double y) {
         builder.strafeTo(new Vector2d(x * TILE_SIZE, y * TILE_SIZE));
     }
 
-    private static void spline(TrajectorySequenceBuilder builder, double x, double y, double heading) {
+    private static void line(TrajectorySequenceBuilder builder, double x, double y, double heading) {
         builder.lineToLinearHeading(new Pose2d(x * TILE_SIZE, y * TILE_SIZE, Math.toRadians(heading)));
     }
 
@@ -37,8 +24,12 @@ public class MeepMeepTesting {
         builder.waitSeconds(seconds);
     }
 
+    private static void spline(TrajectorySequenceBuilder builder, double x, double y, double heading) {
+        builder.splineTo(new Vector2d(x * TILE_SIZE, y * TILE_SIZE), Math.toRadians(heading));
+    }
+
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(720);
         FieldUtil.setFIELD_HEIGHT(144);
         FieldUtil.setFIELD_WIDTH(144);
 
@@ -47,11 +38,21 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> {
                     var builder = drive.trajectorySequenceBuilder(new Pose2d(12, -72, Math.toRadians(90)));
                     strafe(builder, 0.25, -1.25);
+                    wait(builder, 1); // deposit first specimen
                     strafe(builder, 2, -1.5);
-                    spline(builder, -2.5, -2.5, 225);
-                    // deposited first sample
-                    spline(builder, 2.5, -1.5, 90);
-                    spline(builder, 2.5, -2.5, 270);
+                    wait(builder, 1); // pick up first sample
+                    line(builder, -1.5, -1.5, 180);
+                    spline(builder, -2.5, -2.25, 270);
+                    wait(builder, 1); // deposit first sample
+                    line(builder, -2.5, -1.5, 180);
+                    line(builder, 2.5, -1.5, 90);
+                    wait(builder, 1); // pick up second sample
+                    line(builder, -1.5, -1.5, 180);
+                    spline(builder, -2.5, -2.25, 270);
+                    wait(builder, 1); // deposit second sample
+                    strafe(builder, -2.5, -1.5);
+                    strafe(builder, 2.5, -1.5);
+                    strafe(builder, 2.5, -2.5); // park
 
                     return builder.build();
                 });
