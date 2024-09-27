@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.opmodes.auto.pipelines.SampleDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.SampleDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -18,11 +18,11 @@ public class SampleDetectionOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+//                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(
-                OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(
+//                OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         pipeline = new SampleDetectionPipeline();
         phoneCam.setPipeline(pipeline);
