@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.TimeProducer;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 
 import org.rowlandhall.meepmeep.MeepMeep;
+import org.rowlandhall.meepmeep.core.util.FieldUtil;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import org.rowlandhall.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
@@ -38,20 +39,20 @@ public class MeepMeepTesting {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
+        FieldUtil.setFIELD_HEIGHT(144);
+        FieldUtil.setFIELD_WIDTH(144);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive -> {
                     var builder = drive.trajectorySequenceBuilder(new Pose2d(12, -72, Math.toRadians(90)));
-//                            .setReversed(true);
                     strafe(builder, 0.25, -1.25);
                     strafe(builder, 2, -1.5);
-                    wait(builder, 0.5);
                     spline(builder, -2.5, -2.5, 225);
-                    wait(builder, 0.5);
                     // deposited first sample
-
                     spline(builder, 2.5, -1.5, 90);
+                    spline(builder, 2.5, -2.5, 270);
+
                     return builder.build();
                 });
 
