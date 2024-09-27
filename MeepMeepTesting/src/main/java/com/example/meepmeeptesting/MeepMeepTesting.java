@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.util.FieldUtil;
@@ -8,61 +9,79 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
-    public static final double TILE_SIZE = 24;
+    private static SimpleBuilder builder;
+
+    private static void strafe(double x, double y) {
+        builder.strafe(x, y);
+    }
+
+    private static void waitS(double seconds) {
+        builder.wait(seconds);
+    }
+
+    private static void line(double x, double y, double heading) {
+        builder.line(x, y, heading);
+    }
+
+    private static void spline(double x, double y, double heading) {
+        builder.spline(x, y, heading);
+    }
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
         FieldUtil.setFIELD_HEIGHT(144);
         FieldUtil.setFIELD_WIDTH(144);
 
-        int mode = 1;
+        final int MODE = 1;
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        switch (mode) {
+        switch (MODE) {
             case 0:
-                myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, -72, Math.toRadians(90)))
-                        .strafeTo(new Vector2d(0.25 * TILE_SIZE, -1.25 * TILE_SIZE))
-                        .waitSeconds(1) // deposit first specimen
-                        .strafeTo(new Vector2d(2 * TILE_SIZE, -1.5 * TILE_SIZE))
-                        .waitSeconds(1) // pick up first sample
-                        .strafeToLinearHeading(new Vector2d(-1.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(180))
-                        .strafeToLinearHeading(new Vector2d(-2.5 * TILE_SIZE, -2.25 * TILE_SIZE), Math.toRadians(270))
-                        .waitSeconds(1) // deposit first sample
-                        .strafeToLinearHeading(new Vector2d(-2.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(180))
-                        .strafeToLinearHeading(new Vector2d(2.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(90))
-                        .waitSeconds(1) // pick up second sample
-                        .strafeToLinearHeading(new Vector2d(-1.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(180))
-                        .splineTo(new Vector2d(-2.5 * TILE_SIZE, -2.25 * TILE_SIZE), Math.toRadians(270))
-                        .waitSeconds(1) // deposit second sample
-                        .strafeTo(new Vector2d(-2.5 * TILE_SIZE, -1.5 * TILE_SIZE))
-                        .strafeTo(new Vector2d(2.5 * TILE_SIZE, -1.5 * TILE_SIZE))
-                        .strafeTo(new Vector2d(2.5 * TILE_SIZE, -2.5 * TILE_SIZE)) // park
-                        .build());
-
+                builder = new SimpleBuilder(myBot.getDrive().actionBuilder(new Pose2d(12, -72, Math.toRadians(90))));
+                strafe(0.25, -1.25);
+                waitS(1); // deposit first specimen
+                strafe(2, -1.5);
+                waitS(1); // pick up first sample
+                line(-1.5, -1.5, 180);
+                spline(-2.5, -2.25, 270);
+                waitS(1); // deposit first sample
+                line(-2.5, -1.5, 180);
+                line(2.5, -1.5, 90);
+                waitS(1); // pick up second sample
+                line(-1.5, -1.5, 180);
+                spline(-2.5, -2.25, 270);
+                waitS(1); // deposit second sample
+                strafe(-2.5, -1.5);
+                strafe(2.5, -1.5);
+                strafe(2.5, -2.5); // park
+                break;
             case 1:
-                myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12, -72, Math.toRadians(90)))
-                                .strafeTo(new Vector2d(-0.25 * TILE_SIZE, -1.25 * TILE_SIZE))
-                                .waitSeconds(1) // deposit first specimen
-                                .strafeToLinearHeading(new Vector2d(-1.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(135))
-                                .waitSeconds(1) // pick up first sample
-                                .strafeToLinearHeading(new Vector2d(-2 * TILE_SIZE, -2.5 * TILE_SIZE), Math.toRadians(200))
-                                .waitSeconds(1) // deposit first sample
-                                .strafeToLinearHeading(new Vector2d(-2 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(135))
-                                .waitSeconds(1) // pick up second sample
-                                .strafeToLinearHeading(new Vector2d(-2 * TILE_SIZE, -2.5 * TILE_SIZE), Math.toRadians(200))
-                                .waitSeconds(1) // deposit second sample
-                                .strafeToLinearHeading(new Vector2d(-2.3 * TILE_SIZE, -1.6 * TILE_SIZE), Math.toRadians(135))
-                                .waitSeconds(1) // pick up third sample
-                                .strafeToLinearHeading(new Vector2d(-2 * TILE_SIZE, -2.5 * TILE_SIZE), Math.toRadians(200))
-                                .waitSeconds(1) // deposit third sample
-                                .strafeToLinearHeading(new Vector2d(-1.5 * TILE_SIZE, -1.5 * TILE_SIZE), Math.toRadians(0))
-                                .strafeTo(new Vector2d(2.5 * TILE_SIZE, -1.5 * TILE_SIZE))
-                                .strafeTo(new Vector2d(2.5 * TILE_SIZE, -2.5 * TILE_SIZE)) // park
-                                .build());
+                builder = new SimpleBuilder(myBot.getDrive().actionBuilder(new Pose2d(-12, -72, Math.toRadians(90))));
+                strafe(-0.25, -1.25);
+                waitS(1); // deposit first specimen
+                line(-1.5, -1.5, 135);
+                waitS(1); // pick up first sample
+                line(-2, -2.5, 200);
+                waitS(1); // deposit first sample
+                line(-2, -1.5, 135);
+                waitS(1); // pick up second sample
+                line(-2, -2.5, 200);
+                waitS(1); // deposit second sample
+                line(-2.3, -1.6, 135);
+                waitS(1); // pick up third sample
+                line(-2, -2.5, 200);
+                waitS(1); // deposit third sample
+                line(-1.5, -1.5, 0);
+                strafe(2.5, -1.5);
+                strafe(2.5, -2.5); // park
+                break;
         }
+
+        myBot.runAction(builder.build());
+
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
