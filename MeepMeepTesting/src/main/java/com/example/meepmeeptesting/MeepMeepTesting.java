@@ -1,8 +1,6 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.util.FieldUtil;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -43,19 +41,19 @@ public class MeepMeepTesting {
                 builder = new SimpleBuilder(myBot.getDrive().actionBuilder(new Pose2d(12, -72, Math.toRadians(90))));
                 strafe(0.25, -1.25);
                 waitS(1); // deposit first specimen
-                strafe(2, -1.5);
+                line(1.5, -1.5, 45);
                 waitS(1); // pick up first sample
-                line(-1.5, -1.5, 180);
-                spline(-2.5, -2.25, 270);
+                line(-1, -1.5, 122.5);
+                spline(-2, -2.5, 200);
                 waitS(1); // deposit first sample
-                line(-2.5, -1.5, 180);
-                line(2.5, -1.5, 90);
+                spline(-1, -1.5, 122.5);
+                line(2, -1.5, 45);
                 waitS(1); // pick up second sample
-                line(-1.5, -1.5, 180);
-                spline(-2.5, -2.25, 270);
+                line(-1, -1.5, 122.5);
+                spline(-2, -2.5, 200);
                 waitS(1); // deposit second sample
-                strafe(-2.5, -1.5);
-                strafe(2.5, -1.5);
+                spline(-1, -1.5, 0);
+                line(2.5, -1.5, 90);
                 strafe(2.5, -2.5); // park
                 break;
             case 1:
@@ -76,7 +74,7 @@ public class MeepMeepTesting {
                 waitS(1); // deposit third sample
                 line(-1.5, -1.5, 0);
                 strafe(2.5, -1.5);
-                strafe(2.5, -2.5); // park
+                line(2.5, -2.5, 90); // park
                 break;
         }
 

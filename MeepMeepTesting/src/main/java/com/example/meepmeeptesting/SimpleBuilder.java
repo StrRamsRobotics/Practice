@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
@@ -25,7 +26,7 @@ public class SimpleBuilder {
     }
 
     public void spline(double x, double y, double heading) {
-        builder = builder.splineTo(new Vector2d(x * TILE_SIZE, y * TILE_SIZE), Math.toRadians(heading));
+        builder = builder.splineToLinearHeading(new Pose2d(x * TILE_SIZE, y * TILE_SIZE, Math.toRadians(heading)), Math.toRadians(heading));
     }
 
     public Action build() {
