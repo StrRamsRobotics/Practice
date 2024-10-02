@@ -70,15 +70,15 @@ public class MeepMeepTesting {
                 line(1.5, -1.5, 45);
                 waitS(1); // pick up first sample
                 line(-1, -1.5, 122.5);
-                spline(-2, -2.5, 200);
+                line(-2, -2.5, 200);
                 waitS(1); // deposit first sample
-                spline(-1, -1.5, 122.5);
+                line(-1, -1.5, 122.5);
                 line(2, -1.5, 45);
                 waitS(1); // pick up second sample
                 line(-1, -1.5, 122.5);
-                spline(-2, -2.5, 200);
+                line(-2, -2.5, 200);
                 waitS(1); // deposit second sample
-                spline(-1, -1.5, 0);
+                line(-1, -1.5, 0);
                 line(2.5, -1.5, 90);
                 strafe(2.5, -2.5); // park
             }
