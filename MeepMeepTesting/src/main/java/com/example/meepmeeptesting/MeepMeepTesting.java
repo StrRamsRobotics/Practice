@@ -36,7 +36,7 @@ public class MeepMeepTesting {
         FieldUtil.setFIELD_HEIGHT(144);
         FieldUtil.setFIELD_WIDTH(144);
 
-        final Mode mode = Mode.RIGHT_RED;
+        final Mode mode = Mode.LEFT_BLUE;
 
         myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
@@ -83,8 +83,42 @@ public class MeepMeepTesting {
                 strafe(2.5, -2.5); // park
             }
             case LEFT_BLUE -> {
+                startAt(0.5, 3, 90);
+                strafe(0.25, 1.25);
+                waitS(1); // deposit first specimen
+                line(-1.5, 1.5, 85);
+                line(-2, 0.6, 85);
+                waitS(1); // pick up first sample
+                line(-1, -1.5, 150);
+                line(-2.5, -2, 250);
+                waitS(1); // deposit first sample
+                line(-1, -1.5, 80);
+                line(-2.5, 0.6, 80);
+                waitS(1); // pick up second sample
+                line(-1, -1.5, 150);
+                line(2.5, -2, 250);
+                waitS(1); // deposit second
+                strafe(-1, -1.5);
+                strafe(2.5, -2.5); // park
             }
             case RIGHT_BLUE -> {
+                startAt(0.5, -3, 90);
+                strafe(0.25, -1.25);
+                waitS(1); // deposit first specimen
+                line(1.5, -1.5, 85);
+                line(2, 0.6, 85);
+                waitS(1); // pick up first sample
+                line(1, -1.5, 150);
+                line(-2.5, -2, 250);
+                waitS(1); // deposit first sample
+                line(1, -1.5, 80);
+                line(2.5, 0.6, 80);
+                waitS(1); // pick up second sample
+                line(1, -1.5, 150);
+                line(-2.5, -2, 250);
+                waitS(1); // deposit second
+                strafe(1, -1.5);
+                strafe(2.5, -2.5); // park
             }
         }
 
