@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.EOCV.vision;
 
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -14,7 +14,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 
-public class RedDetectionPipeline extends OpenCvPipeline
+public class SampleDetectionPipeline extends OpenCvPipeline
 {
     /*
      * Working image buffers
@@ -23,9 +23,11 @@ public class RedDetectionPipeline extends OpenCvPipeline
     Mat crMat = new Mat();
     Mat cbMat = new Mat();
 
+    Mat blueThresholdMat = new Mat();
     Mat redThresholdMat = new Mat();
     Mat yellowThresholdMat = new Mat();
 
+    Mat morphedBlueThreshold = new Mat();
     Mat morphedRedThreshold = new Mat();
     Mat morphedYellowThreshold = new Mat();
 
@@ -34,7 +36,8 @@ public class RedDetectionPipeline extends OpenCvPipeline
     /*
      * Threshold values
      */
-    static final int YELLOW_MASK_THRESHOLD = 80;
+    static final int YELLOW_MASK_THRESHOLD = 57;
+    static final int BLUE_MASK_THRESHOLD = 150;
     static final int RED_MASK_THRESHOLD = 198;
 
     /*
@@ -47,6 +50,7 @@ public class RedDetectionPipeline extends OpenCvPipeline
      * Colors
      */
     static final Scalar RED = new Scalar(255, 0, 0);
+    static final Scalar BLUE = new Scalar(0, 0, 255);
     static final Scalar YELLOW = new Scalar(255, 255, 0);
 
     static final int CONTOUR_LINE_THICKNESS = 2;
@@ -120,6 +124,7 @@ public class RedDetectionPipeline extends OpenCvPipeline
             {
                 Mat masks = new Mat();
                 Core.addWeighted(yellowThresholdMat, 1.0, redThresholdMat, 1.0, 0.0, masks);
+                Core.addWeighted(masks, 1.0, blueThresholdMat, 1.0, 0.0, masks);
                 return masks;
             }
 
@@ -127,6 +132,7 @@ public class RedDetectionPipeline extends OpenCvPipeline
             {
                 Mat masksNR = new Mat();
                 Core.addWeighted(morphedYellowThreshold, 1.0, morphedRedThreshold, 1.0, 0.0, masksNR);
+                Core.addWeighted(masksNR, 1.0, morphedBlueThreshold, 1.0, 0.0, masksNR);
                 return masksNR;
             }
 
@@ -157,14 +163,18 @@ public class RedDetectionPipeline extends OpenCvPipeline
         Core.extractChannel(ycrcbMat, crMat, 1); // Cr channel index is 1
 
         // Threshold the channels to form masks
+        Imgproc.threshold(cbMat, blueThresholdMat, BLUE_MASK_THRESHOLD, 255, Imgproc.THRESH_BINARY);
         Imgproc.threshold(crMat, redThresholdMat, RED_MASK_THRESHOLD, 255, Imgproc.THRESH_BINARY);
         Imgproc.threshold(cbMat, yellowThresholdMat, YELLOW_MASK_THRESHOLD, 255, Imgproc.THRESH_BINARY_INV);
 
         // Apply morphology to the masks
+        morphMask(blueThresholdMat, morphedBlueThreshold);
         morphMask(redThresholdMat, morphedRedThreshold);
         morphMask(yellowThresholdMat, morphedYellowThreshold);
 
         // Find contours in the masks
+        ArrayList<MatOfPoint> blueContoursList = new ArrayList<>();
+        Imgproc.findContours(morphedBlueThreshold, blueContoursList, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 
         ArrayList<MatOfPoint> redContoursList = new ArrayList<>();
         Imgproc.findContours(morphedRedThreshold, redContoursList, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
@@ -176,6 +186,11 @@ public class RedDetectionPipeline extends OpenCvPipeline
         contoursOnPlainImageMat = Mat.zeros(input.size(), input.type());
 
         // Analyze and draw contours
+        for(MatOfPoint contour : blueContoursList)
+        {
+            analyzeContour(contour, input, "Blue");
+        }
+
         for(MatOfPoint contour : redContoursList)
         {
             analyzeContour(contour, input, "Red");
@@ -272,6 +287,8 @@ public class RedDetectionPipeline extends OpenCvPipeline
     {
         switch (color)
         {
+            case "Blue":
+                return BLUE;
             case "Yellow":
                 return YELLOW;
             default:

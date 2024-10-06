@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.EOCV.vision;
 
 public final class VisionConstants {
     public static final double CENTER_OFFSET = -30;
