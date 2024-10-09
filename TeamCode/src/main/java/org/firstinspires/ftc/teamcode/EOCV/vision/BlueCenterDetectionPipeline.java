@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.EOCV.vision;
 
+import androidx.annotation.Nullable;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -30,6 +32,8 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
     Mat morphedYellowThreshold = new Mat();
 
     Mat contoursOnPlainImageMat = new Mat();
+
+    public double angle = 0;
 
     /*
      * Threshold values
@@ -73,7 +77,7 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
     Stage[] stages = Stage.values();
     int stageNum = 0;
 
-    static Point specifiedPoint = new Point(0, 0);
+    private static final Point center = new Point(0, 0);
 
     @Override
     public void onViewportTapped() {
@@ -90,8 +94,8 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         internalStoneList.clear();
 
-        specifiedPoint.x = input.cols() / 2.0 + VisionConstants.CENTER_OFFSET;
-        specifiedPoint.y = input.rows() / 2.0;
+        center.x = input.cols() / 2.0 + VisionConstants.CENTER_OFFSET;
+        center.y = input.rows() / 2.0;
 
         /*
          * Run the image processing
@@ -100,7 +104,7 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
 
         clientStoneList = new ArrayList<>(internalStoneList);
 
-        drawSpecifiedPoint(input);
+        drawCenter(input);
 
         /*
          * Decide which buffer to send to the viewport
@@ -208,8 +212,8 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
                     continue;
                 }
 
-                double distance = Math.sqrt(Math.pow(rotatedRectFitToContour.center.x - specifiedPoint.x, 2) +
-                        Math.pow(rotatedRectFitToContour.center.y - specifiedPoint.y, 2));
+                double distance = Math.sqrt(Math.pow(rotatedRectFitToContour.center.x - center.x, 2) +
+                        Math.pow(rotatedRectFitToContour.center.y - center.y, 2));
 
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -230,8 +234,8 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
             }
 
             // Compute the angle and store it
-            double angle = -(rotRectAngle - 180);
-            drawTagText(closestRect, (int) Math.round(angle) + " deg", input, color);
+            this.angle = -(rotRectAngle - 180);
+            drawTagText(closestRect, (int) Math.round(this.angle) + " deg", input, color);
 
             // Store the detected stone information
             BlueCenterDetectionPipeline.AnalyzedStone analyzedStone = new BlueCenterDetectionPipeline.AnalyzedStone();
@@ -279,7 +283,11 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
         }
     }
 
-    private static void drawSpecifiedPoint(Mat input) {
-        Imgproc.circle(input, specifiedPoint, 1, new Scalar(255, 255, 255), -1);
+    public double getAngle() {
+        return this.angle;
+    }
+
+    private static void drawCenter(Mat input) {
+        Imgproc.circle(input, center, 1, new Scalar(255, 255, 255), -1);
     }
 }

@@ -31,6 +31,8 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
 
     Mat contoursOnPlainImageMat = new Mat();
 
+    public double angle = 0;
+
     /*
      * Threshold values
      */
@@ -231,8 +233,8 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
             }
 
             // Compute the angle and store it
-            double angle = -(rotRectAngle - 180);
-            drawTagText(closestRect, (int) Math.round(angle) + " deg", input, color);
+            this.angle = -(rotRectAngle - 180);
+            drawTagText(closestRect, (int) Math.round(this.angle) + " deg", input, color);
 
             // Store the detected stone information
             RedCenterDetectionPipeline.AnalyzedStone analyzedStone = new RedCenterDetectionPipeline.AnalyzedStone();
@@ -278,6 +280,10 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
             default:
                 return RED;
         }
+    }
+
+    public double getAngle() {
+        return this.angle;
     }
 
     private static void drawSpecifiedPoint(Mat input) {
