@@ -12,6 +12,4 @@ repositories {
 
 dependencies {
     implementation 'com.acmerobotics.roadrunner:MeepMeep:0.1.6'
-    testImplementation 'org.mockito:mockito-core:3.9.0'
-    testImplementation 'junit:junit:4.13.2'
 }
