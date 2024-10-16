@@ -35,7 +35,7 @@ public class RedDetectionPipeline extends OpenCvPipeline
      * Threshold values
      */
     static final int YELLOW_MASK_THRESHOLD = 80;
-    static final int RED_MASK_THRESHOLD = 198;
+    static final int RED_MASK_THRESHOLD = 185;
 
     /*
      * Elements for noise reduction

@@ -38,7 +38,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline
      */
     static final int YELLOW_MASK_THRESHOLD = 57;
     static final int BLUE_MASK_THRESHOLD = 150;
-    static final int RED_MASK_THRESHOLD = 198;
+    static final int RED_MASK_THRESHOLD = 185;
 
     /*
      * Elements for noise reduction

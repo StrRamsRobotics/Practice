@@ -20,7 +20,7 @@ public class Teleop extends LinearOpMode {
     private Servo crServo;
     private RedCenterDetectionPipeline pipeline;
     private OpenCvWebcam camera;
-    private boolean running = false;
+    private boolean isHeld = false;
     private final Pair<Integer, Integer> cameraResolution = new Pair<>(320, 240);
 
     @Override
@@ -45,12 +45,13 @@ public class Teleop extends LinearOpMode {
 
             // Claw alignment
 
-            if (gamepad1.a && !running) {
-                running = true;
+            if (gamepad1.a && !isHeld) {
+                isHeld = true;
+                alignClaw();
             }
 
-            if (running) {
-                alignClaw();
+            if (!gamepad1.a) {
+                isHeld = false;
             }
         }
     }
@@ -61,7 +62,6 @@ public class Teleop extends LinearOpMode {
         double ANGLE_THRESHOLD = 5;
         if (minDistance(angle, TARGET_ANGLE) > ANGLE_THRESHOLD) {
             crServo.setPosition(angle / 180);
-            running = false;
         }
     }
 
