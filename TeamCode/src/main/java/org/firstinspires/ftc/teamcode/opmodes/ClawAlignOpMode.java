@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import android.util.Pair;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,6 +20,7 @@ public class ClawAlignOpMode extends OpMode {
     private RedCenterDetectionPipeline pipeline;
     private OpenCvWebcam camera;
     private boolean running = false;
+    private final Pair<Integer, Integer> cameraResolution = new Pair<>(320, 240);
 
     @Override
     public void init() {
@@ -30,7 +33,7 @@ public class ClawAlignOpMode extends OpMode {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(cameraResolution.first, cameraResolution.second, OpenCvCameraRotation.UPRIGHT);
                 FtcDashboard.getInstance().startCameraStream(camera, 30);
             }
 

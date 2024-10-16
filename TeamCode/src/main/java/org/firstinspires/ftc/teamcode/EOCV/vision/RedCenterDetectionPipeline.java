@@ -75,7 +75,7 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
     Stage[] stages = Stage.values();
     int stageNum = 0;
 
-    static Point specifiedPoint = new Point(0, 0);
+    private static final Point center = new Point(0, 0);
 
     @Override
     public void onViewportTapped() {
@@ -92,8 +92,8 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         internalStoneList.clear();
 
-        specifiedPoint.x = input.cols() / 2.0 + VisionConstants.CENTER_OFFSET;
-        specifiedPoint.y = input.rows() / 2.0;
+        center.x = input.cols() / 2.0 + VisionConstants.CENTER_OFFSET;
+        center.y = input.rows() / 2.0;
 
         /*
          * Run the image processing
@@ -102,7 +102,7 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
 
         clientStoneList = new ArrayList<>(internalStoneList);
 
-        drawSpecifiedPoint(input);
+        drawCenter(input);
 
         /*
          * Decide which buffer to send to the viewport
@@ -211,8 +211,8 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
                     continue;
                 }
 
-                double distance = Math.sqrt(Math.pow(rotatedRectFitToContour.center.x - specifiedPoint.x, 2) +
-                        Math.pow(rotatedRectFitToContour.center.y - specifiedPoint.y, 2));
+                double distance = Math.sqrt(Math.pow(rotatedRectFitToContour.center.x - center.x, 2) +
+                        Math.pow(rotatedRectFitToContour.center.y - center.y, 2));
 
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -274,19 +274,17 @@ public class RedCenterDetectionPipeline extends OpenCvPipeline {
     }
 
     static Scalar getColorScalar(String color) {
-        switch (color) {
-            case "Yellow":
-                return YELLOW;
-            default:
-                return RED;
+        if (color.equals("Yellow")) {
+            return YELLOW;
         }
+        return RED;
     }
 
     public double getAngle() {
         return this.angle;
     }
 
-    private static void drawSpecifiedPoint(Mat input) {
-        Imgproc.circle(input, specifiedPoint, 1, new Scalar(255, 255, 255), -1);
+    private static void drawCenter(Mat input) {
+        Imgproc.circle(input, center, 1, new Scalar(255, 255, 255), -1);
     }
 }

@@ -275,12 +275,10 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
     }
 
     static Scalar getColorScalar(String color) {
-        switch (color) {
-            case "Blue":
-                return BLUE;
-            default:
-                return YELLOW;
+        if (color.equals("Blue")) {
+            return BLUE;
         }
+        return YELLOW;
     }
 
     public double getAngle() {
