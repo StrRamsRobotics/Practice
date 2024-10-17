@@ -1,27 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import android.util.Pair;
-
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.EOCV.vision.RedCenterDetectionPipeline;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.teamcode.Robot;
 
 @TeleOp
 public class Teleop extends LinearOpMode {
-    private Servo crServo;
-    private RedCenterDetectionPipeline pipeline;
-    private OpenCvWebcam camera;
     private boolean isHeld = false;
-    private final Pair<Integer, Integer> cameraResolution = new Pair<>(320, 240);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,13 +25,16 @@ public class Teleop extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
             double rx = gamepad1.right_stick_x;
+
             drive.setDrivePowers(new PoseVelocity2d(new Vector2d(x, y), rx));
-            CRServoImplEx servo = hardwareMap.get(CRServoImplEx.class, "servo");
+
+            // Claw open/close
+
             if (gamepad2.left_trigger >= 0.5 && gamepad2.left_trigger <= 1) {
-                servo.setPower(1);
+                Robot.claw.setPower(1);
             }
             if (gamepad2.right_trigger >= 0.5 && gamepad2.right_trigger <= 1) {
-                servo.setPower(-1);
+                Robot.claw.setPower(-1);
             }
 
             // Claw alignment
@@ -57,11 +51,16 @@ public class Teleop extends LinearOpMode {
     }
 
     private void alignClaw() {
-        double angle = pipeline.getAngle();
+        double angle;
+        if (Robot.isBlue) {
+            angle = Robot.bluePipeline.angle;
+        } else {
+            angle = Robot.redPipeline.angle;
+        }
         double TARGET_ANGLE = 0;
         double ANGLE_THRESHOLD = 5;
         if (minDistance(angle, TARGET_ANGLE) > ANGLE_THRESHOLD) {
-            crServo.setPosition(angle / 180);
+            Robot.clawRotate.setPosition(angle / 180);
         }
     }
 
