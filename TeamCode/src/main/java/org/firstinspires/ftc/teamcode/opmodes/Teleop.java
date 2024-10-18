@@ -18,29 +18,15 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp
 public class Teleop extends LinearOpMode {
     private boolean isHeld = false;
-    public RedCenterDetectionPipeline redPipeline;
-    public BlueCenterDetectionPipeline bluePipeline;
     public Chassis chassis;
     private final boolean IS_BLUE = true;
 
     @Override
     public void runOpMode() {
-        this.chassis = new Chassis(hardwareMap, telemetry);
+        this.chassis = new Chassis(hardwareMap, telemetry, IS_BLUE);
         chassis.logHelper.addData("Running", "Teleop");
         Gamepad gamepad1 = this.gamepad1;
         Gamepad gamepad2 = this.gamepad2;
-        bluePipeline = new BlueCenterDetectionPipeline();
-        redPipeline = new RedCenterDetectionPipeline();
-        chassis.camera.setPipeline(IS_BLUE ? bluePipeline : redPipeline);
-        chassis.camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                chassis.camera.startStreaming(chassis.CAMERA_RESOLUTION.first, chassis.CAMERA_RESOLUTION.second, OpenCvCameraRotation.UPRIGHT);
-                FtcDashboard.getInstance().startCameraStream(chassis.camera, 30);
-            }
-            @Override
-            public void onError(int errorCode) {}
-        });
 
         waitForStart();
 
@@ -76,9 +62,9 @@ public class Teleop extends LinearOpMode {
     private void alignClaw() {
         double angle;
         if (Chassis.isBlue) {
-            angle = bluePipeline.angle;
+            angle = chassis.bluePipeline.angle;
         } else {
-            angle = redPipeline.angle;
+            angle = chassis.redPipeline.angle;
         }
         double TARGET_ANGLE = 0;
         double ANGLE_THRESHOLD = 5;

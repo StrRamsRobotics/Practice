@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.EOCV.vision.BlueCenterDetectionPipeline;
+import org.firstinspires.ftc.teamcode.EOCV.vision.RedCenterDetectionPipeline;
 import org.firstinspires.ftc.teamcode.helpers.LogHelper;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -30,11 +32,18 @@ public class Chassis {
     public final Pair<Integer, Integer> CAMERA_RESOLUTION = new Pair<>(320, 240);
     public FtcDashboard ftcDashboard = FtcDashboard.getInstance();
     public LogHelper logHelper = new LogHelper(this);
+    public RedCenterDetectionPipeline redPipeline;
+    public BlueCenterDetectionPipeline bluePipeline;
 
     public Chassis(HardwareMap hardwareMap, Telemetry telemetry) {
         initializeUtils(hardwareMap, telemetry);
         initializeMotors();
-        initializeCamera();
+    }
+
+    public Chassis(HardwareMap hardwareMap, Telemetry telemetry, boolean isBlue) {
+        initializeUtils(hardwareMap, telemetry);
+        initializeMotors();
+        initializeCamera(isBlue);
     }
 
     public void initializeUtils(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -43,17 +52,26 @@ public class Chassis {
     }
 
     public void initializeMotors() {
-//        clawRotate = hardwareMap.get(Servo.class, "clawRotate");
-//        claw = hardwareMap.get(CRServoImplEx.class, "claw");
+        clawRotate = hardwareMap.get(Servo.class, "clawRotate");
+        claw = hardwareMap.get(CRServoImplEx.class, "claw");
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
-        // Set pipeline based on alliance color
-//        camera.setPipeline(isBlue ? bluePipeline : redPipeline);
-
     }
 
-    public void initializeCamera() {
+    public void initializeCamera(boolean isBlue) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "camera"), cameraMonitorViewId);
+        bluePipeline = new BlueCenterDetectionPipeline();
+        redPipeline = new RedCenterDetectionPipeline();
+        camera.setPipeline(isBlue ? bluePipeline : redPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(CAMERA_RESOLUTION.first, CAMERA_RESOLUTION.second, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(camera, 30);
+            }
+            @Override
+            public void onError(int errorCode) {}
+        });
     }
 }
