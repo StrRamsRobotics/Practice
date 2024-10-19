@@ -81,7 +81,7 @@ public class MeepMeepTesting {
                 line(2.5, -1.5, 90);
                 strafe(2.5, -2.5); // park
             }
-            case LEFT_BLUE -> {
+            case RIGHT_BLUE -> {
                 startAt(-0.5, 3, 90);
                 strafe(-0.25, 1.25);
                 waitS(1); // deposit first specimen
@@ -99,6 +99,25 @@ public class MeepMeepTesting {
                 line(2, 1.5, 45);
                 line(-1.5, 1.5, 45);
                 line(-2.5, 2.5,270);//park
+            }
+            case LEFT_BLUE -> {
+                startAt(0.5, 3, -90);
+                strafe(0.25, 1.25);
+                waitS(1); // deposit first specimen
+                line(1.5, 1.5, 320);
+                waitS(1); // pick up first sample
+                line(2, 2.25, 45);
+                waitS(1); // deposit first sample
+                line(2, 1.5, 320);
+                waitS(1); // pick up second sample
+                line(2, 2.25, 45);
+                waitS(1); // deposit second sample
+                line(2.5, 1.5, 320);
+                waitS(1); // pick up third sample
+                line(2, 2.25, 45);
+                waitS(1); // deposit third sample
+                line(2, 1.5, 180);
+                strafe(1.25, 0.5);
             }
             case RED_STEAL-> {
                 startAt(0.5, -3, 90);
