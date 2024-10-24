@@ -25,7 +25,7 @@ public class LeftBlueAuto extends LinearOpMode {
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(36, 36), Math.toRadians(320))
                 .waitSeconds(1)
-                .stopAndAdd(new ClawAlignAction())
+                .stopAndAdd(new ClawAlignAction(chassis))
                 .strafeToLinearHeading(new Vector2d(48, 54), Math.toRadians(45))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(48, 36), Math.toRadians(320))

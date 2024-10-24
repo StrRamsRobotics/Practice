@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -25,6 +26,11 @@ public class Chassis {
     public Telemetry telemetry;
 
     public Servo clawRotate;
+    public Servo clawPitch;
+    public DcMotor armPivot1;
+    public DcMotor armPivot2;
+    public DcMotor slidesPivot1;
+    public DcMotor slidesPivot2;
     public CRServoImplEx claw;
 
     public OpenCvWebcam camera;
@@ -53,7 +59,12 @@ public class Chassis {
 
     public void initializeMotors() {
         clawRotate = hardwareMap.get(Servo.class, "clawRotate");
+        clawPitch = hardwareMap.get(Servo.class, "clawPitch");
         claw = hardwareMap.get(CRServoImplEx.class, "claw");
+        armPivot1 = hardwareMap.get(DcMotor.class, "armPivot1");
+        armPivot2 = hardwareMap.get(DcMotor.class, "armPivot2");
+        slidesPivot1 = hardwareMap.get(DcMotor.class, "slidesPivot1");
+        slidesPivot2 = hardwareMap.get(DcMotor.class, "slidesPivot2");
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
     }

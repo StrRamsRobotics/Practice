@@ -10,7 +10,9 @@ import org.firstinspires.ftc.teamcode.Chassis;
 
 @TeleOp
 public class Teleop extends LinearOpMode {
-    private boolean isHeld = false;
+    private boolean isAHeld = false;
+    private boolean isYHeld = false; // deposit preset
+    private boolean isXHeld = false; // pickup preset
     public Chassis chassis;
     private final boolean IS_BLUE = true;
 
@@ -39,17 +41,37 @@ public class Teleop extends LinearOpMode {
                 chassis.claw.setPower(-1);
             }
 
+            // Claw pickup
+
+            if (gamepad1.y && !isYHeld) {
+                isYHeld = true;
+                pickup();
+            }
+
+            if (!gamepad1.y && isYHeld) {
+                isYHeld = false;
+                double armAngle = chassis.armPivot1.getCurrentPosition() * 180; // angle of the arm
+                chassis.clawPitch.setPosition((90 - armAngle) / 180); // make the claw perpendicular to the ground
+            }
+
             // Claw alignment
 
-            if (gamepad1.a && !isHeld) {
-                isHeld = true;
+            if (gamepad1.a && !isAHeld) {
+                isAHeld = true;
                 alignClaw();
             }
 
             if (!gamepad1.a) {
-                isHeld = false;
+                isAHeld = false;
             }
         }
+    }
+
+    private void pickup() {
+        chassis.armPivot1.setTargetPosition(90);
+        chassis.armPivot2.setTargetPosition(90);
+        chassis.slidesPivot1.setTargetPosition(90);
+        chassis.slidesPivot2.setTargetPosition(90);
     }
 
     private void alignClaw() {
