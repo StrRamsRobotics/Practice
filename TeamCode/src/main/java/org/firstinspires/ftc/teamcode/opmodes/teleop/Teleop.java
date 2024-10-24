@@ -14,7 +14,7 @@ public class Teleop extends LinearOpMode {
     private boolean isYHeld = false; // deposit preset
     private boolean isXHeld = false; // pickup preset
     public Chassis chassis;
-    private final boolean IS_BLUE = true;
+    private static final boolean IS_BLUE = true;
 
     @Override
     public void runOpMode() {

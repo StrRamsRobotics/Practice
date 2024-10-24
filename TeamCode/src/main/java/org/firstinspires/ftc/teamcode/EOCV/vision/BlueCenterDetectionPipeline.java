@@ -176,6 +176,10 @@ public class BlueCenterDetectionPipeline extends OpenCvPipeline {
 
         // Analyze and draw contours
         analyzeClosestContour(colorContoursMap, input);
+
+        if (internalStoneList.isEmpty()) {
+            angle = 0;
+        }
     }
 
     void morphMask(Mat input, Mat output) {
